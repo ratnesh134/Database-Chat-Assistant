@@ -3,10 +3,12 @@ import urllib.parse
 
 from dotenv import load_dotenv
 from langchain_community.utilities import SQLDatabase
+from langchain_core.messages import AIMessage, HumanMessage
 import streamlit as st
 
 load_dotenv()
 
+# Encoding the password, to avoid errors
 raw_password = os.getenv("DB_PASSWORD")
 enocoded_password = urllib.parse.quote_plus(raw_password)
 
@@ -14,6 +16,14 @@ enocoded_password = urllib.parse.quote_plus(raw_password)
 def init_database(user: str,password: str,host: str, port: str, database: str) -> SQLDatabase:
     db_uri = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
     return SQLDatabase.from_uri(db_uri)
+
+
+# Chat History Initialization
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = [
+        AIMessage(content="Hello! I'm a SQL assistant. Ask me anything about your database"),
+
+    ]
 
 
 st.set_page_config(page_title="Chat With MySQL",page_icon=":speech_balloon")
@@ -47,4 +57,28 @@ with st.sidebar:
             st.success("Connected to Database !!")
 
 
-st.chat_input("Type a message...")
+for message in st.session_state.chat_history:
+    if isinstance(message, AIMessage):
+        with st.chat_message("AI"):
+            st.markdown(message.content)
+    
+    elif isinstance(message, HumanMessage):
+        with st.chat_message("Human"):
+            st.markdown(message.content)
+
+# Chat block
+user_query = st.chat_input("Type a message...") 
+
+
+# Chat History Storage
+if user_query is not None and user_query.strip()!="":
+    st.session_state.chat_history.append(HumanMessage(content=user_query))
+
+    with st.chat_message("Human"):    # to showcase the message on the screen
+        st.markdown(user_query)
+
+    with st.chat_message("AI"):
+        response = "I don't know how to respond to that. "
+        st.markdown(response)
+
+    st.session_state.chat_history.append(AIMessage(content=response))
