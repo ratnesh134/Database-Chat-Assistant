@@ -42,10 +42,10 @@ def get_sql_chain(db):
     
     Your turn:
     
-    Question: {question}
+    Question: {{question}}
     SQL Query:
     """
-    prompt = ChatPromptTemplate(template)
+    prompt = ChatPromptTemplate.from_template(template)
     llm = ChatGroq(model="llama-3.3-70b-versatile")
 
     def get_schema(_):
@@ -57,7 +57,7 @@ def get_sql_chain(db):
     RunnablePassthrough.assign(schema=get_schema)
     | prompt
     | llm
-    | StrOutputParser
+    | StrOutputParser()
     )
 
 # Chat History Initialization
@@ -120,7 +120,11 @@ if user_query is not None and user_query.strip()!="":
         st.markdown(user_query)
 
     with st.chat_message("AI"):
-        response = "I don't know how to respond to that. "
+        sql_chain = get_sql_chain(st.session_state.db)
+        response = sql_chain.invoke({
+            "chat_history": st.session_state.chat_history,
+            "questions" : user_query
+        })
         st.markdown(response)
 
     st.session_state.chat_history.append(AIMessage(content=response))
