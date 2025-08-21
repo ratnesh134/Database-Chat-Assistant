@@ -96,7 +96,7 @@ def get_response(user_query: str, db: SQLDatabase, chat_history: list):
         | StrOutputParser()
     )
 
-    return chain.invoke({
+    return chain.stream({
         "question" : user_query,
         "chat_history" : chat_history 
     })
@@ -154,7 +154,7 @@ if user_query is not None and user_query.strip()!="":
 
     with st.chat_message("AI"):
         
-        response = get_response(user_query,st.session_state.db,st.session_state.chat_history)
-        st.markdown(response)
+        # Streaming responses from LLMs
+        response = st.write_stream(get_response(user_query,st.session_state.db,st.session_state.chat_history))
 
     st.session_state.chat_history.append(AIMessage(content=response))
