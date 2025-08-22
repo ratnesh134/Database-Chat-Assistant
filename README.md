@@ -1,6 +1,10 @@
 # Database-Chat-Assistant
 An interactive AI-powered chatbot built with Streamlit, LangChain, and MySQL that allows users to query databases using natural language instead of writing SQL manually.
 
+## Project Demo
+
+[DEMO](https://drive.google.com/file/d/187d3Ad1WdlLynHtuwZC6WwjjTP7K0NV2/view?usp=sharing)
+
 ## 🚀 Features
 
 Natural Language Queries → Ask questions like “Show top 5 customers by total purchases” and get instant results.
