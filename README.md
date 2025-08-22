@@ -22,7 +22,7 @@ Secure Credentials → Database password handled with environment variables and 
 ## 🛠️ Steps to Recreate the Project
 1. Clone the Repository
 ```
-git clone https://github.com/yourusername/chat-with-mysql.git
+git clone https://github.com/ratnesh134/Database-Chat-Assistant.git
 cd chat-with-mysql
 ```
 2. Create Virtual Environment
